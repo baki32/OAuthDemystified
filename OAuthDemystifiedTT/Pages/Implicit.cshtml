@@ -1,0 +1,65 @@
+﻿@page
+@model OAuthDemystifiedTT.Pages.ImplicitModel
+@{
+}
+
+<h1>Implicit sample</h1>
+<div id="oauthPlaceholder"></div>
+
+<script type="text/javascript">
+    var url = "https://login.microsoftonline.com/9fc05d5c-d237-4598-9f9c-65b71fb914ab/oauth2/v2.0/authorize" +
+        "?client_id=eb28e386-ad93-429e-9820-4c7e9b7152d5" +
+        "&response_type=" + encodeURIComponent("id_token token") +
+        "&redirect_uri=" + encodeURIComponent("https://localhost:44337/implicit") +
+        "&scope=" + encodeURIComponent("openid User.Read") +
+        "&resource=" + encodeURIComponent("https://graph.windows.net") +
+        "&response_mode=fragment" +
+        "&state=12345" +
+        "&nonce=678910";    window.onload = function () {
+        if (!window.location.hash) {
+            window.location = url;
+        }
+        else {
+            var hash = window.location.hash.substring(1);
+            var parsed = {};
+            var split = hash.split("&");
+
+            for (var i = 0; i < split.length - 1; i++) {
+                var pair = split[i].split("=");
+                parsed[pair[0]] = pair[1];
+            }
+
+            window.access_token = parsed.access_token;
+
+            //remove hash from URL
+            history.pushState("", document.title, window.location.pathname + window.location.search);
+
+            $.ajax({
+                method: "GET",
+                url: "https://localhost:44389/api/values",
+                headers: {
+                    "Authorization": "Bearer " + window.access_token
+                },
+                async: true,
+                success: function (response){
+                    $("#oauthPlaceholder").html("TOP SECRET: " + response);
+                }
+            });
+        }
+    }
+
+    var HttpClient = function () {
+        this.get = function (aUrl, aCallback) {
+            var anHttpRequest = new XMLHttpRequest();
+            anHttpRequest.onreadystatechange = function () {
+                if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+                    aCallback(anHttpRequest.responseText);
+            }
+            //anHttpRequest.withCredentials = true;
+            anHttpRequest.open("GET", aUrl, true);
+            //anHttpRequest.setRequestHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
+            anHttpRequest.setRequestHeader("Authorization", "Bearer " + window.access_token);
+            anHttpRequest.send(null);
+        }
+    }
+</script>

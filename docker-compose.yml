@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  oauthdemystifiedtt:
+    image: ${DOCKER_REGISTRY-}oauthdemystifiedtt
+    build:
+      context: .
+      dockerfile: OAuthDemystifiedTT\Dockerfile
