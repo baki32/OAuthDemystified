@@ -68,7 +68,10 @@ namespace OAuthDemystifiedTT
                     options.Configuration = options.ConfigurationManager.GetConfigurationAsync(CancellationToken.None).Result;
                 });
 
-            services.AddMvc()
+            services.AddMvc(options =>
+            {
+                options.EnableEndpointRouting = false;
+            })
                 .AddRazorPagesOptions(options =>
                 {
                     options.Conventions.AuthorizePage("/Authgrant");
