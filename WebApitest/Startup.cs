@@ -54,6 +54,7 @@ namespace WebApitest
             //.AddAzureADBearer(options => Configuration.Bind("AzureAd", options));
             services.AddMvc(options =>
             {
+                options.EnableEndpointRouting = false;
                 //options.Filters.Add(new AuthorizeFilter(policy));
             }).SetCompatibilityVersion(CompatibilityVersion.Latest);
 
