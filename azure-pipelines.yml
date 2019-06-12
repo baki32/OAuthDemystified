@@ -13,7 +13,7 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'restore'
-    feedsToUse: 'select'
+    feedsToUse: 'config'
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
