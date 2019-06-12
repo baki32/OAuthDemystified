@@ -18,7 +18,8 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
+    projects: '/OAuthDemystifiedTT/OAuthDemystifiedTT.csproj'
 - task: DotNetCoreCLI@2
   inputs:
-    command: 'publish'
+    command: 'publish'    
     publishWebProjects: true
