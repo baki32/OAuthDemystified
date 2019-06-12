@@ -10,16 +10,10 @@ pool:
 
 steps:
 # Starter pipeline
-- task: DotNetCoreCLI@1
-  inputs:
-    command: 'restore'
-    feedsToUse: 'config'
-    projects: 'OAuthDemystified/*.csproj'
+- script: dotnet restore
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: 'OAuthDemystified/*.csproj'
-- task: DotNetCoreCLI@2
-  inputs:
-    command: 'publish'    
-    publishWebProjects: true
+    projects: '**/*.csproj'
+    arguments: '--configuration Release'
+- task: PublishBuildArtifacts@1
