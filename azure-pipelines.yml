@@ -13,7 +13,9 @@ steps:
   inputs:
     version: '3.0.100-preview5-011568'
 # Starter pipeline
-- script: dotnet restore
+- script: dotnet restore ./OAuthDemystifiedTT/OAuthDemystifiedTT.csproj
+- script: dotnet restore ./OauthHandler/OauthHandler.csproj
+- script: dotnet restore ./WebApitest/WebApitest.csproj
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
