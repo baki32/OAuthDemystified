@@ -10,7 +10,7 @@ pool:
 
 steps:
 # Starter pipeline
-- task: DotnetRestore@1
+- task: DotNetCoreCLI@1
   inputs:
     command: 'restore'
     feedsToUse: 'config'
