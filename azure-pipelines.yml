@@ -14,11 +14,11 @@ steps:
   inputs:
     command: 'restore'
     feedsToUse: 'config'
-    projects: '/OAuthDemystifiedTT/OAuthDemystifiedTT.csproj'
+    projects: '*/*.csproj'
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
-    projects: '/OAuthDemystifiedTT/OAuthDemystifiedTT.csproj'
+    projects: '*/*.csproj'
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'    
