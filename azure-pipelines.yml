@@ -10,10 +10,11 @@ pool:
 
 steps:
 # Starter pipeline
-- task: DotNetCoreCLI@2
+- task: DotnetRestore@1
   inputs:
     command: 'restore'
     feedsToUse: 'config'
+    projects: '/OAuthDemystifiedTT/OAuthDemystifiedTT.csproj'
 - task: DotNetCoreCLI@2
   inputs:
     command: 'build'
