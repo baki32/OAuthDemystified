@@ -2,7 +2,7 @@ version: '3'
 
 services:
   ci-build:
-    image: 3.0.0-preview6-buster-slim
+    image: mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6-buster
     volumes:
       - .:/src
     working_dir: /src

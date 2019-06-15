@@ -1,9 +1,9 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
+FROM mcr.microsoft.com/dotnet/core/runtime:3.0.0-preview6-buster-slim AS base
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 44433
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0-buster AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6-buster AS build
 WORKDIR /src
 COPY ["OAuthDemystifiedTT/OAuthDemystifiedTT.csproj", "OAuthDemystifiedTT/"]
 COPY ["OauthHandler/OauthHandler.csproj", "OauthHandler/"]
