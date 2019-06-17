@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.0.0-preview6 AS base
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 44433
+EXPOSE 80
+EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6 AS build
 WORKDIR /src
