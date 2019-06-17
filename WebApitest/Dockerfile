@@ -3,7 +3,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6-buster AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6 AS build
 WORKDIR /src
 COPY ["WebApitest/WebApitest.csproj", "WebApitest/"]
 RUN dotnet restore "WebApitest/WebApitest.csproj"
