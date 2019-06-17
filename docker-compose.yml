@@ -5,4 +5,4 @@ services:
     image: oauthdemystifiedtt
     build:
       context: .
-      dockerfile: OAuthDemystifiedTT\Dockerfile
+      dockerfile: ./OAuthDemystifiedTT/Dockerfile
