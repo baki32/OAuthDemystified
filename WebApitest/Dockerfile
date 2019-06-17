@@ -5,8 +5,8 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0.100-preview6 AS build
 WORKDIR /src
-COPY ["WebApitest/WebApitest.csproj", "WebApitest/"]
-RUN dotnet restore "WebApitest/WebApitest.csproj"
+COPY ["/WebApitest/WebApitest.csproj", "WebApitest/"]
+RUN dotnet restore "./WebApitest/WebApitest.csproj"
 COPY . .
 WORKDIR "/src/WebApitest"
 RUN dotnet build "WebApitest.csproj" -c Release -o /app

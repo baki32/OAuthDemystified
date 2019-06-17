@@ -6,3 +6,8 @@ services:
     build:
       context: .
       dockerfile: ./OAuthDemystifiedTT/Dockerfile
+  WebApitest:
+    image: webapitest
+    build:
+      context: .
+      dockerfile: ./WebApitest/Dockerfile
