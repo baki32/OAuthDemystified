@@ -68,6 +68,8 @@ steps:
     Contents: |
      **/msTT.yaml
      **/*.dacpac
+     **/mstt-0.1.0.tgz
+     **/helm/*
      
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
