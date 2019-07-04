@@ -9,11 +9,5 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.0.0-preview6.19307.2" />
     <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="5.4.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Microsoft.AspNetCore.Authentication.OAuth">
-      <HintPath>..\Libraries\Microsoft.AspNetCore.Authentication.OAuth.dll</HintPath>
-    </Reference>
   </ItemGroup>  
 </Project>

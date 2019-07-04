@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:  
+  name: msttclusterip
+  namespace: mstt-2
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: web-front
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: msttingress
+  namespace: mstt-2
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  tls:
+  - hosts:
+    - mstt2.0d1459123cdb4220b8b5.westeurope.aksapp.io
+    secretName: tls-secret
+  rules:
+  - host: mstt2.0d1459123cdb4220b8b5.westeurope.aksapp.io
+    http:
+      paths:
+      - backend:
+          serviceName: msttclusterip
+          servicePort: 80
+        path: /(.*) 

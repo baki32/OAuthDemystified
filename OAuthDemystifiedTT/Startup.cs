@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -21,8 +22,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
 using OauthHandler;
 using OpenIdConnect.AzureAdSample;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
 
 namespace OAuthDemystifiedTT
 {
@@ -38,6 +44,8 @@ namespace OAuthDemystifiedTT
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHealthChecks()
+                .AddCheck("self", () => HealthCheckResult.Healthy());
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -51,7 +59,7 @@ namespace OAuthDemystifiedTT
                 sharedOptions.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
                 .AddCookie(options =>
-                {
+                {                    
                     options.Events.OnRedirectToLogin = context =>
                     {
                         throw new Exception("Not logged in!");
@@ -67,6 +75,16 @@ namespace OAuthDemystifiedTT
                     options.ConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(stsDiscoveryEndpoint, new OpenIdConnectConfigurationRetriever());
                     options.Configuration = options.ConfigurationManager.GetConfigurationAsync(CancellationToken.None).Result;
                 });
+
+            var storageAccount = CloudStorageAccount.Parse($"DefaultEndpointsProtocol=https;AccountName=msttkubernetesstorage;AccountKey={Environment.GetEnvironmentVariable("STORAGE_SECRET")};EndpointSuffix=core.windows.net");
+            var client = storageAccount.CreateCloudBlobClient();
+            var container = client.GetContainerReference("key-container");
+
+            container.CreateIfNotExistsAsync().GetAwaiter().GetResult();
+
+            services.AddDataProtection()
+                .SetApplicationName("OAuth demystified")
+                .PersistKeysToAzureBlobStorage(container, "keys.xml");
 
             services.AddMvc(options =>
             {
@@ -96,6 +114,19 @@ namespace OAuthDemystifiedTT
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseHealthChecks("/liveness", new HealthCheckOptions
+            {
+                Predicate = r => r.Name.Contains("self")
+            });
+
+            app.UseHealthChecks("/hc", new HealthCheckOptions()
+            {
+                Predicate = _ => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+
+            app.UseHealthChecksUI();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

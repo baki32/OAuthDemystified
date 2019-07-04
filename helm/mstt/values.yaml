@@ -1,0 +1,53 @@
+addonhttpapplicationroutingnginxconfiguration:
+  large-client-header-buffers: 4 256k
+  namespace: kube-system
+  proxy-buffer-size: 128k
+  proxy-buffers: 4 256k
+back:
+  back:
+    image: ibmkettkubernetesacr.azurecr.io/webapitest
+    imagePullPolicy: Always
+    imageTag: latest
+  minReadySeconds: 5
+  namespace: mstt-2
+  replicas: 2
+  serviceType: ClusterIP
+msttclusterip:
+  namespace: mstt-2
+  serviceType: ClusterIP
+webfront:
+  minReadySeconds: 5
+  namespace: mstt-2
+  replicas: 2
+  webfront:
+    aspnetcoreenvironment: Development
+    image: ibmkettkubernetesacr.azurecr.io/oauthdemystifiedtt
+    imagePullPolicy: Always
+    imageTag: latest
+    protocol: https
+    storagesecret: /iVNlvgYXi5+CtDogwqLkZKX4tunqdPTnEq7yvEDlvWjXSkCNcS44VWsMspufqtjszFXhFz8b6eNylJHdP+BUg==
+ingress:
+  enabled: true
+  name: msttingress
+  namespace: mstt-2
+  annotations: {
+    #kubernetes.io/ingress.class: addon-http-application-routing
+    nginx.ingress.kubernetes.io/rewrite-target: /$1,
+    kubernetes.io/ingress.class: nginx
+  }
+  hosts:
+    - host: mstt2.0d1459123cdb4220b8b5.westeurope.aksapp.io
+      serviceName: msttclusterip
+      servicePort: msttclusterip
+      paths:
+        - path: /(.*)
+          pathName: backend
+          serviceName: msttclusterip
+          servicePort: 80
+  tls:
+    - secretName: tls-secret
+      hosts:
+        - mstt2.0d1459123cdb4220b8b5.westeurope.aksapp.io
+    #- secretName: chart-example-tls
+    #  hosts:
+    #    - chart-example.local

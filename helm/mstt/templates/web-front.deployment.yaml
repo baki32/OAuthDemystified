@@ -1,0 +1,48 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: web-front
+  namespace: '{{.Values.webfront.namespace}}'
+spec:
+  minReadySeconds: {{.Values.webfront.minReadySeconds}}
+  replicas: {{.Values.webfront.replicas}}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: web-front
+      annotations:
+        timestamp: "{{ date "20060102150405" .Release.Time }}"
+    spec:
+      containers:
+      - env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: '{{.Values.webfront.webfront.aspnetcoreenvironment}}'
+        - name: PROTOCOL
+          value: '{{.Values.webfront.webfront.protocol}}'
+        - name: STORAGE_SECRET
+          value: '{{.Values.webfront.webfront.storagesecret}}'
+        image: '{{.Values.webfront.webfront.image}}:{{.Values.webfront.webfront.imageTag}}'
+        imagePullPolicy: '{{.Values.webfront.webfront.imagePullPolicy}}'
+        livenessProbe:
+          httpGet:
+            path: /liveness
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 60
+        name: web-front
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /hc
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 60

@@ -7,12 +7,13 @@
 <div id="oauthPlaceholder"></div>
 
 <script type="text/javascript">
+    var host = "@Model.url";
     var url = "https://login.microsoftonline.com/9fc05d5c-d237-4598-9f9c-65b71fb914ab/oauth2/v2.0/authorize" +
         "?client_id=eb28e386-ad93-429e-9820-4c7e9b7152d5" +
         "&response_type=" + encodeURIComponent("id_token token") +
-        "&redirect_uri=" + encodeURIComponent("https://localhost:44337/implicit") +
+        "&redirect_uri=" + encodeURIComponent(host + "/implicit") +
         "&scope=" + encodeURIComponent("openid User.Read") +
-        "&resource=" + encodeURIComponent("https://graph.windows.net") +
+        //"&resource=" + encodeURIComponent("https://graph.windows.net") +
         "&response_mode=fragment" +
         "&state=12345" +
         "&nonce=678910";    window.onload = function () {
@@ -36,7 +37,7 @@
 
             $.ajax({
                 method: "GET",
-                url: "https://localhost:44389/api/values",
+                url: "http://back:8080/api/values",
                 headers: {
                     "Authorization": "Bearer " + window.access_token
                 },

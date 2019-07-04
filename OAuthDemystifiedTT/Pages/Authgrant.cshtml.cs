@@ -16,22 +16,31 @@ namespace OAuthDemystifiedTT.Pages
         public string TopSecret { get; set; }
         public async Task OnGet()
         {
-            var token = await Request.HttpContext.GetTokenAsync("access_token");
-            var http = new HttpClient();
-            http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
-            var resp = await http.GetAsync("https://localhost:44389/api/values");
-
-            if (resp.IsSuccessStatusCode)
+            try
             {
-                var content = await resp.Content.ReadAsStringAsync();
-                TopSecret = content;
+                var token = await Request.HttpContext.GetTokenAsync("access_token");
+                Console.WriteLine("TOKEN: " + token);
+                var http = new HttpClient();
+                http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                var resp = await http.GetAsync("http://back/api/values");
+
+                if (resp.IsSuccessStatusCode)
+                {
+                    var content = await resp.Content.ReadAsStringAsync();
+                    TopSecret = content;
+                }
+                else
+                {
+                    await Request.HttpContext.ChallengeAsync(
+                        "TechtalkScheme",
+                        new AuthenticationProperties { RedirectUri = Url.Content("~/Authgrant") });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await Request.HttpContext.ChallengeAsync(
-                    "TechtalkScheme",
-                    new AuthenticationProperties { RedirectUri = Url.Content("~/Authgrant") });
+
+                throw new Exception("JA NEVIEM US" + ex.ToString());
             }
         }
     }

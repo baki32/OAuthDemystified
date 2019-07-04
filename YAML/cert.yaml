@@ -1,0 +1,18 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: tls-secret
+  namespace:  mstt-2
+spec:
+  secretName: tls-secret
+  dnsNames:
+  - mstt2.0d1459123cdb4220b8b5.westeurope.aksapp.io
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      - mstt2.0d1459123cdb4220b8b5.westeurope.aksapp.io
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer

@@ -1,0 +1,29 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: back
+  namespace: '{{.Values.back.namespace}}'
+spec:
+  minReadySeconds: {{.Values.back.minReadySeconds}}
+  replicas: {{.Values.back.replicas}}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: back
+      annotations:
+        timestamp: "{{ date "20060102150405" .Release.Time }}"
+    spec:
+      containers:
+      - image: '{{.Values.back.back.image}}:{{.Values.back.back.imageTag}}'
+        imagePullPolicy: '{{.Values.back.back.imagePullPolicy}}'
+        name: back
+        ports:
+        - containerPort: 80

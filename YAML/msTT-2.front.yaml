@@ -1,0 +1,42 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: web-front
+  namespace: mstt-2
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:      
+      labels:
+        app: web-front
+    spec:
+      containers:
+      - name: web-front
+        image: ibmkettkubernetesacr.azurecr.io/oauthdemystifiedtt
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: "ASPNETCORE_ENVIRONMENT"
+          value: "Development"
+        - name: PROTOCOL
+          value: "https"
+        - name: STORAGE_SECRET
+          value: "/iVNlvgYXi5+CtDogwqLkZKX4tunqdPTnEq7yvEDlvWjXSkCNcS44VWsMspufqtjszFXhFz8b6eNylJHdP+BUg=="
+        livenessProbe:
+          httpGet:
+            path: /liveness
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /hc
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 3

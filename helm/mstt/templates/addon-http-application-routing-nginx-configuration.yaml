@@ -1,0 +1,15 @@
+apiVersion: v1
+data:
+  large-client-header-buffers: 4 256k
+  proxy-buffer-size: 128k
+  proxy-buffers: 4 256k
+kind: ConfigMap
+metadata:
+  labels:
+    app: addon-http-application-routing-ingress-nginx
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    kubernetes.io/cluster-service: "true"
+    release: '{{.Release.Name}}'
+  name: addon-http-application-routing-nginx-configuration
+  namespace: '{{.Values.addonhttpapplicationroutingnginxconfiguration.namespace}}'

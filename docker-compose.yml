@@ -2,12 +2,12 @@ version: '3.4'
 
 services:
   oauthdemystifiedtt:
-    image: oauthdemystifiedtt
+    image: ibmkettkubernetesacr.azurecr.io/oauthdemystifiedtt
     build:
       context: .
       dockerfile: ./OAuthDemystifiedTT/Dockerfile
   WebApitest:
-    image: webapitest
+    image: ibmkettkubernetesacr.azurecr.io/webapitest
     build:
       context: .
       dockerfile: ./WebApitest/Dockerfile

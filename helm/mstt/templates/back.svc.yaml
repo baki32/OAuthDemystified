@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    chart: '{{.Chart.Name}}-{{.Chart.Version}}'
+    heritage: '{{.Release.Service}}'
+    release: '{{.Release.Name}}'
+  name: back
+  namespace: '{{.Values.back.namespace}}'
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: 'back'
+  type: '{{.Values.back.serviceType}}'

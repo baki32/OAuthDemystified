@@ -1,0 +1,133 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: back
+  namespace: mstt-2
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+
+  template:
+    metadata:      
+      labels:
+        app: back
+    spec:
+      containers:
+      - name: back
+        image: ibmkettkubernetesacr.azurecr.io/webapitest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80        
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: back
+  namespace: mstt-2
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: back
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: web-front
+  namespace: mstt-2
+spec:
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+
+  template:
+    metadata:      
+      labels:
+        app: web-front
+
+    spec:
+      containers:
+      - name: web-front
+        image: ibmkettkubernetesacr.azurecr.io/oauthdemystifiedtt
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        env:
+        - name: "ASPNETCORE_ENVIRONMENT"
+          value: "Development"
+        - name: PROTOCOL
+          value: "https"
+        - name: STORAGE_SECRET
+          value: "/iVNlvgYXi5+CtDogwqLkZKX4tunqdPTnEq7yvEDlvWjXSkCNcS44VWsMspufqtjszFXhFz8b6eNylJHdP+BUg=="
+        livenessProbe:
+          httpGet:
+            path: /liveness
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /hc
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 3
+        #resources:
+        #  requests:
+        #    cpu: 250m
+        #  limits:
+        #    cpu: 500m
+      #imagePullSecrets:
+      #- name: azacr        
+---
+apiVersion: v1
+kind: Service
+metadata:  
+  name: msttclusterip
+  namespace: mstt-2
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: web-front
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: msttlb
+#  namespace: mstt-2
+#spec:
+#  type: LoadBalancer
+#  ports:
+#  - port: 80
+#  selector:
+#    app: web-front
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: msttingress
+  namespace: mstt-2
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  tls:
+  - hosts:
+    - mstt2.0d1459123cdb4220b8b5.westeurope.aksapp.io
+    secretName: tls-secret
+  rules:
+  - host: mstt2.0d1459123cdb4220b8b5.westeurope.aksapp.io
+    http:
+      paths:
+      - path: /(.*) 
+        backend:
+          serviceName: msttclusterip
+          servicePort: 80

@@ -75,10 +75,11 @@ namespace OauthHandler
 
         protected override Task HandleChallengeAsync(AuthenticationProperties properties)
         {
+            Console.WriteLine("HANDLECHALLENGEASYNC: " + HtmlEncoder.Default.Encode($"{Environment.GetEnvironmentVariable("PROTOCOL") ?? "http"}://{this.Request.Host}/signin-oidc"));
             var url = $"https://login.microsoftonline.com/9fc05d5c-d237-4598-9f9c-65b71fb914ab/oauth2/authorize" +
                     $"?client_id=eb28e386-ad93-429e-9820-4c7e9b7152d5" +
                     $"&response_type=code" +
-                    $"&redirect_uri={HtmlEncoder.Default.Encode("https://localhost:44337/signin-oidc")}" +
+                    $"&redirect_uri={HtmlEncoder.Default.Encode($"{Environment.GetEnvironmentVariable("PROTOCOL") ?? "http"}://{this.Request.Host}/signin-oidc")}" +
                     $"&response_mode=form_post" +
                     // VERY SIMPLIFIED but .net core is doing it in similar way using state param => store redirect URL in state, either take what's in properties or store current action URL
                     $"&state={properties.RedirectUri ?? $"{ new Uri(new Uri(this.Context.Request.Headers["Referer"]), this.Context.Request.Path.Value)}"}";
@@ -95,7 +96,14 @@ namespace OauthHandler
         {
             var properties = new AuthenticationProperties();
             var form = await Request.ReadFormAsync();
+            Console.WriteLine("PRINTING FORM");
+            foreach (var key in form.Keys)
+            {
+                Console.WriteLine($"{key} : {form[key]}");
+            }
+
             var http = new HttpClient();
+            Console.WriteLine($"{HtmlEncoder.Default.Encode($"{this.Request.Scheme}://{this.Request.Host}/signin-oidc")}");
             http.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/x-www-form-urlencoded");
             var resp = await http.PostAsync("https://login.microsoftonline.com/9fc05d5c-d237-4598-9f9c-65b71fb914ab/oauth2/token",
                 new FormUrlEncodedContent(new[]
@@ -103,16 +111,17 @@ namespace OauthHandler
                     new KeyValuePair<string, string>("grant_type", "authorization_code"),
                     new KeyValuePair<string, string>("client_id", "eb28e386-ad93-429e-9820-4c7e9b7152d5"),
                     new KeyValuePair<string, string>("code", form["code"]),
-                    new KeyValuePair<string, string>("redirect_uri", "https://localhost:44337/signin-oidc"),
-                    new KeyValuePair<string, string>("client_secret", "VfZbajtpKNdQwsDw9kJ6v8ghG9Gx4J/i5/58BoSuTao=")
+                    new KeyValuePair<string, string>("redirect_uri", $"{HtmlEncoder.Default.Encode($"{Environment.GetEnvironmentVariable("PROTOCOL") ?? "http"}://{this.Request.Host}/signin-oidc")}" ),
+                    new KeyValuePair<string, string>("client_secret", $"{HtmlEncoder.Default.Encode("Vpr4gYm1O5aVjYzELlO0zOW0tJv8kElq/UelqLNnDV8=")}")
                 }
                ));
             var content = await resp.Content.ReadAsStringAsync();
-            
+            Console.WriteLine(content);
+            properties.RedirectUri = form["state"];
+            Console.WriteLine(properties.RedirectUri);
             var authorizationResponse = new OpenIdConnectMessage(content);
             //retrieve redirect URL
-            properties.RedirectUri = form["state"];
-
+            //resp.EnsureSuccessStatusCode();
             SecurityToken validatedToken;
             var validationParameters = new TokenValidationParameters();
             validationParameters.ValidateAudience = false;
