@@ -65,9 +65,8 @@ steps:
 - task: CopyFiles@2
   displayName: 'Copy Files'
   inputs:
-    Contents: |
-     **/msTT.yaml
-     **/*.dacpac
+    Contents: |    
+     **/helm/**
      
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
