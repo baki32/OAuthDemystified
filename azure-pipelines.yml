@@ -65,13 +65,10 @@ steps:
 - task: CopyFiles@2
   displayName: 'Copy Files'
   inputs:
-    Contents: |
-     **/msTT.yaml
-     **/*.dacpac
-     **/mstt-0.1.0.tgz
-     **/helm/*
+    Contents: |    
+     **/helm/**
      
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/mstt'
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact'
