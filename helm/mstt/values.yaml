@@ -25,7 +25,8 @@ webfront:
     imagePullPolicy: Always
     imageTag: latest
     protocol: https
-    storagesecret: /iVNlvgYXi5+CtDogwqLkZKX4tunqdPTnEq7yvEDlvWjXSkCNcS44VWsMspufqtjszFXhFz8b6eNylJHdP+BUg==
+    storagename: REPLACE WITH NAME OF STORAGE ACCOUNT
+    storagesecret: REPLACE WITH KEY FROM AZURE
 ingress:
   enabled: true
   name: msttingress

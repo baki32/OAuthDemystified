@@ -76,7 +76,7 @@ namespace OAuthDemystifiedTT
                     options.Configuration = options.ConfigurationManager.GetConfigurationAsync(CancellationToken.None).Result;
                 });
 
-            var storageAccount = CloudStorageAccount.Parse($"DefaultEndpointsProtocol=https;AccountName=msttkubernetesstorage;AccountKey={Environment.GetEnvironmentVariable("STORAGE_SECRET")};EndpointSuffix=core.windows.net");
+            var storageAccount = CloudStorageAccount.Parse($"DefaultEndpointsProtocol=https;AccountName={Environment.GetEnvironmentVariable("STORAGE_NAME")};AccountKey={Environment.GetEnvironmentVariable("STORAGE_SECRET")};EndpointSuffix=core.windows.net");
             var client = storageAccount.CreateCloudBlobClient();
             var container = client.GetContainerReference("key-container");
 

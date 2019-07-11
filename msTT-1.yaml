@@ -81,8 +81,10 @@ spec:
           value: "Development"   
         - name: PROTOCOL
           value: "http"
+        - name: STORAGE_NAME
+          value: REPLACE WITH NAME FROM AZURE
         - name: STORAGE_SECRET
-          value: "/iVNlvgYXi5+CtDogwqLkZKX4tunqdPTnEq7yvEDlvWjXSkCNcS44VWsMspufqtjszFXhFz8b6eNylJHdP+BUg=="
+          value: REPLACE WITH KEY FROM AZURE
         #resources:
         #  requests:
         #    cpu: 250m

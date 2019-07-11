@@ -29,6 +29,8 @@ spec:
           value: '{{.Values.webfront.webfront.protocol}}'
         - name: STORAGE_SECRET
           value: '{{.Values.webfront.webfront.storagesecret}}'
+           - name: STORAGE_NAME
+          value: '{{.Values.webfront.webfront.storagename}}'
         image: '{{.Values.webfront.webfront.image}}:{{.Values.webfront.webfront.imageTag}}'
         imagePullPolicy: '{{.Values.webfront.webfront.imagePullPolicy}}'
         livenessProbe:

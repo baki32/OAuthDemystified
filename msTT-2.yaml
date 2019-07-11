@@ -65,8 +65,10 @@ spec:
           value: "Development"
         - name: PROTOCOL
           value: "https"
+        - name: STORAGE_NAME
+          value: REPLACE WITH NAME FROM AZURE
         - name: STORAGE_SECRET
-          value: "/iVNlvgYXi5+CtDogwqLkZKX4tunqdPTnEq7yvEDlvWjXSkCNcS44VWsMspufqtjszFXhFz8b6eNylJHdP+BUg=="
+          value: REPLACE WITH KEY FROM AZURE
         livenessProbe:
           httpGet:
             path: /liveness
